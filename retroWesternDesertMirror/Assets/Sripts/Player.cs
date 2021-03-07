@@ -4,34 +4,65 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-    private float xInput, yInput;
-    private bool isMoving;
-    public float speed = 4f;
+    private float xInput;
+    public float jumpForce = 1f;
+    private bool facingRight = true;
+    public float movementSpeed = 4f;
     public Rigidbody2D rb;
     public Animator animator;
     
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
-        isMoving = false;    
+
     }
 
-    // Update is called once per frame
     void Update()
     {
 
-        xInput = Input.GetAxisRaw("Horizontal");
-        yInput = Input.GetAxisRaw("Vertical");
-        isMoving = (xInput != 0 || yInput != 0);
+        var xInput = Input.GetAxisRaw("Horizontal");
+        animator.SetFloat("Speed", Mathf.Abs(xInput));
 
-        if (isMoving)
+        transform.position += new Vector3(xInput,0,0) * Time.deltaTime * movementSpeed;
+
+        if (Input.GetButtonDown("Jump") && Mathf.Abs(rb.velocity.y) < 0.001f)
         {
-             var moveVector = new Vector3(xInput, yInput, 0);
-             rb.MovePosition(new Vector2((transform.position.x + moveVector.x * speed * Time.deltaTime),
-            (transform.position.y + moveVector.y * speed * Time.deltaTime)));
-            animator.SetFloat("Speed", xInput);
+            rb.AddForce(new Vector2(0, jumpForce), ForceMode2D.Impulse);
         }
+
+       if (Mathf.Abs(rb.velocity.y) > 0.001f)
+        {
+            animator.SetBool("isJumping", true);
+        }
+
+        else {
+            animator.SetBool("isJumping", false);
+        }
+
+            if (xInput > 0 && !facingRight)
+			{
+				Flip();
+			}
+			else if (xInput < 0 && facingRight)
+			{
+				Flip();
+			}
+
     }
+
+    void FixedUpdate(){
+
+        
+    }
+
+    	private void Flip()
+	{
+
+		facingRight = !facingRight;
+		Vector3 theScale = transform.localScale;
+		theScale.x *= -1;
+		transform.localScale = theScale;
+	}
     
 }
 
