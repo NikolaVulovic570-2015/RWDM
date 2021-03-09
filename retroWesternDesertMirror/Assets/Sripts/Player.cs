@@ -8,6 +8,9 @@ public class Player : MonoBehaviour
     public float jumpForce = 1f;
     private bool facingRight = true;
     public float movementSpeed = 4f;
+    public int health = 100;
+    public Transform reflectionPoint;
+    public GameObject reflection;
     public Rigidbody2D rb;
     public Animator animator;
     
@@ -17,13 +20,22 @@ public class Player : MonoBehaviour
 
     }
 
+    public void takeDamage (int damage)
+    {
+        health -= damage;
+
+        if (health <= 0)
+        {
+            Destroy(gameObject);
+        }
+    }
+
     void Update()
     {
-
         var xInput = Input.GetAxisRaw("Horizontal");
         animator.SetFloat("Speed", Mathf.Abs(xInput));
-
-        transform.position += new Vector3(xInput,0,0) * Time.deltaTime * movementSpeed;
+        transform.Translate(xInput * Time.deltaTime * movementSpeed, 0,0);
+      
 
         if (Input.GetButtonDown("Jump") && Mathf.Abs(rb.velocity.y) < 0.001f)
         {
@@ -48,16 +60,21 @@ public class Player : MonoBehaviour
 				Flip();
 			}
 
-    }
+        if (Input.GetKeyDown(KeyCode.S))
+        {
+           Instantiate(reflection, reflectionPoint.position, reflectionPoint.rotation); 
+           animator.SetBool("isReflecting", true);
+        }      
 
-    void FixedUpdate(){
-
-        
+        if (Input.GetKeyUp(KeyCode.S))
+        {
+           animator.SetBool("isReflecting", false);
+        }
+    
     }
 
     	private void Flip()
 	{
-
 		facingRight = !facingRight;
 		Vector3 theScale = transform.localScale;
 		theScale.x *= -1;
