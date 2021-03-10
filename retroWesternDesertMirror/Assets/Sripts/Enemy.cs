@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class Enemy : MonoBehaviour
 {
@@ -9,16 +7,31 @@ public class Enemy : MonoBehaviour
     public float distance = 10f;
     public Transform firePoint;
     public GameObject bullet;
+    public bool isMoving = true;
+    public int health = 50;
     public LayerMask whatIsPlayer;
     public Rigidbody2D rb;
     public Animator animator;
     public float nextShotTime = 0f;
     public float timeBetweenShots = 1.5f;
+    public AudioSource enemyHit;
+    public AudioSource gun;
     
     
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
+    }
+
+        public void takeDamage (int damage)
+    {
+        enemyHit.Play();
+        health -= damage;
+
+        if (health <= 0)
+        {
+            Destroy(gameObject);
+        }
     }
 
 
@@ -29,13 +42,13 @@ public class Enemy : MonoBehaviour
         {
              if (nextShotTime <= Time.time)
             {
+                gun.Play();
                 Instantiate(bullet, firePoint.position, firePoint.rotation);
                 animator.SetBool("isFiring", true);
                 nextShotTime = Time.time + timeBetweenShots;
             } 
 
         }
-
         else
         {
             transform.Translate(-2 * Time.deltaTime * movementSpeed, 0,0);

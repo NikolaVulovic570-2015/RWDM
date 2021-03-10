@@ -1,21 +1,16 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class Reflection : MonoBehaviour
-{
+{  
     public float movementSpeed = 4f;
-
-    void Start()
-    {
-       
-    }
+    GameObject reflectionPoint;
 
     void Update()
     {
+        reflectionPoint = GameObject.Find("ReflectionPoint");
         if(gameObject != null)
         {
-            Destroy(gameObject, 0.3f);
+            Destroy(gameObject, 0.6f);
         }
         
         if (Input.GetKeyUp(KeyCode.S))
@@ -23,12 +18,7 @@ public class Reflection : MonoBehaviour
             Destroy(gameObject);
         }
 
-        var xInput = Input.GetAxisRaw("Horizontal");
-        transform.Translate(xInput * Time.deltaTime * movementSpeed, 0,0);
-      
-   
-     
-
+        Vector3 targetPosition = new Vector3(reflectionPoint.transform.position.x, reflectionPoint.transform.position.y, -1);
+        transform.position = targetPosition;
     }
-  
 }

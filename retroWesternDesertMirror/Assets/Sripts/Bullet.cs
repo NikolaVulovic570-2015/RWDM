@@ -1,10 +1,9 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class Bullet : MonoBehaviour
 {
-    public float speed = 15f;
+    public int dmg = 35;
+    public float speed = 12f;
     public Rigidbody2D rb;
 
     void Start()
@@ -19,6 +18,7 @@ public class Bullet : MonoBehaviour
          Enemy enemy = hit.GetComponent<Enemy>();
          if (enemy != null)
          {
+             enemy.takeDamage(dmg);
              Destroy(gameObject);
          }
 
@@ -31,7 +31,14 @@ public class Bullet : MonoBehaviour
         Player player = hit.GetComponent<Player>();
          if (player != null)
          {
-             player.takeDamage(35);
+             player.takeDamage(dmg);
+             Destroy(gameObject);
+         }
+
+         Boss boss = hit.GetComponent<Boss>();
+         if (boss != null)
+         {
+             boss.takeDamage(dmg);
              Destroy(gameObject);
          }
      }

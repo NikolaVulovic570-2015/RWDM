@@ -5,6 +5,7 @@ public class CameraFollow : MonoBehaviour
     public Transform target;
     [Range(1,10)]
     public float smoothFactor;
+    public float direction;
 
     private void FixedUpdate()
     {
@@ -14,7 +15,16 @@ public class CameraFollow : MonoBehaviour
     
     void Follow()
     {
-        Vector3 targetPosition = new Vector3(target.position.x + 5f,0,-10);
+        if (target.localScale.x < 0f)
+        {
+           direction = -5f;
+        }  
+        if (target.localScale.x > 0f)
+        {
+           direction = 5f;
+        }        
+
+        Vector3 targetPosition = new Vector3(target.position.x + direction,0,-10);
         Vector3 smoothPosition = Vector3.Lerp(transform.position, targetPosition, smoothFactor*Time.fixedDeltaTime);
         transform.position = smoothPosition;
     }

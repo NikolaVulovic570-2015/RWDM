@@ -1,6 +1,5 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Player : MonoBehaviour
 {
@@ -11,8 +10,12 @@ public class Player : MonoBehaviour
     public int health = 100;
     public Transform reflectionPoint;
     public GameObject reflection;
+    public GameObject life1;
+    public GameObject life2;
+    public GameObject life3;
     public Rigidbody2D rb;
     public Animator animator;
+    public AudioSource playerHit;
     
     void Start()
     {
@@ -22,11 +25,22 @@ public class Player : MonoBehaviour
 
     public void takeDamage (int damage)
     {
+        playerHit.Play ();
         health -= damage;
+        if (health == 65)
+        {
+            Destroy(life1);
+        }
+
+        if (health == 30)
+        {
+            Destroy(life2);
+        }
 
         if (health <= 0)
         {
-            Destroy(gameObject);
+            Destroy(life3);
+            SceneManager.LoadScene("GameOver");
         }
     }
 
@@ -70,8 +84,21 @@ public class Player : MonoBehaviour
         {
            animator.SetBool("isReflecting", false);
         }
+
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            SceneManager.LoadScene("Tnx");
+        }
     
     }
+
+     void OnTriggerEnter2D (Collider2D hit)
+     {
+         if (hit.gameObject.tag.Equals("EndGame"))
+         {
+             SceneManager.LoadScene("EndGame");
+         }
+     }
 
     	private void Flip()
 	{
